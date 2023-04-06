@@ -1,9 +1,10 @@
 import React from 'react';
-import { View, Text, TextInput, StyleSheet } from 'react-native';
+import { TextInput, StyleSheet } from 'react-native';
+import { Card, Text } from 'react-native-paper';
 
 export const Todo: React.FC = () => {
   return (
-    <View style={styles.todoContainer}>
+    <Card style={styles.todoContainer} mode={'elevated'}>
       <TextInput
         style={styles.todoText}
         editable
@@ -19,18 +20,20 @@ export const Todo: React.FC = () => {
         placeholder="New todo text"
       />
       <Text>Datepicker</Text>
-    </View>
+    </Card>
   );
 };
 
 const styles = StyleSheet.create({
   todoContainer: {
+    height: 250,
     marginLeft: 20,
     marginRight: 20,
     borderColor: 'black',
-    borderWidth: 1,
+    borderWidth: 0.15,
     borderRadius: 10,
     padding: 15,
+    backgroundColor: 'white',
   },
   todoText: {
     borderColor: 'black',
