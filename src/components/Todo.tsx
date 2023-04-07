@@ -1,11 +1,32 @@
 import React from 'react';
-import { TextInput, StyleSheet, Pressable } from 'react-native';
+import { TextInput, StyleSheet, Pressable, Platform } from 'react-native';
 import { Card, Text } from 'react-native-paper';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePicker, {
+  DateTimePickerEvent,
+} from '@react-native-community/datetimepicker';
 import { useState } from 'react';
 
 export const Todo: React.FC = () => {
-  const [date, setDate] = useState(new Date());
+  const [date, setDate] = useState<Date>(new Date());
+  const [showPicker, setShowPicker] = useState<Boolean>(false);
+
+  const onDateChange = (
+    event: DateTimePickerEvent,
+    selectedDate: Date,
+  ): void => {
+    const currentDate = selectedDate || date;
+    setShowPicker(Platform.OS === 'ios');
+    setDate(currentDate);
+  };
+
+  const togglePicker = (): void => {
+    if (Platform.OS === 'ios') {
+      setShowPicker(true);
+    } else {
+      setShowPicker(!showPicker);
+    }
+  };
+
   return (
     <Card style={styles.todoContainer} mode={'elevated'}>
       <TextInput
@@ -23,8 +44,26 @@ export const Todo: React.FC = () => {
         placeholder="New todo text"
       />
       <Text style={styles.datePickerHeader}>When do you want to finish?</Text>
-      <DateTimePicker value={date} style={styles.datePicker} />
-      <Pressable style={styles.submitBtn}>
+      {showPicker && (
+        <DateTimePicker
+          value={date}
+          mode="date"
+          display="default"
+          onChange={onDateChange}
+          minimumDate={new Date()}
+          style={styles.datePicker}
+        />
+      )}
+      {!showPicker && (
+        <Pressable
+          onPress={togglePicker}
+          style={[styles.button, styles.finishBtn]}>
+          <Text style={styles.submitBtnText}>Select Finish Date</Text>
+        </Pressable>
+      )}
+      {/* Conditionally render test on the bottom on Android after date is set.
+      Or just simply show it all the time */}
+      <Pressable style={styles.button}>
         <Text style={styles.submitBtnText}>Submit</Text>
       </Pressable>
     </Card>
@@ -59,14 +98,14 @@ const styles = StyleSheet.create({
     marginTop: 3,
     alignSelf: 'center',
   },
-  submitBtn: {
+  button: {
     borderColor: 'black',
     borderRadius: 10,
     borderWidth: 0.3,
     padding: 10,
     width: 180,
     alignSelf: 'center',
-    marginTop: 30,
+    marginTop: 20,
     marginBottom: 10,
     backgroundColor: '#e9e5e5',
   },
@@ -74,5 +113,8 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     fontWeight: 'bold',
     color: 'black',
+  },
+  finishBtn: {
+    marginTop: 10,
   },
 });
