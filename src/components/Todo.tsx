@@ -61,8 +61,12 @@ export const Todo: React.FC = () => {
           <Text style={styles.submitBtnText}>Select Finish Date</Text>
         </Pressable>
       )}
-      {/* Conditionally render test on the bottom on Android after date is set.
-      Or just simply show it all the time */}
+      {Platform.OS === 'android' && (
+        <Text
+          style={
+            styles.selectedDateText
+          }>{`Selected Finish Date: ${date.toLocaleDateString()}`}</Text>
+      )}
       <Pressable style={styles.button}>
         <Text style={styles.submitBtnText}>Submit</Text>
       </Pressable>
@@ -114,7 +118,15 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: 'black',
   },
+  selectedDateText: {
+    alignSelf: 'center',
+    fontWeight: 'bold',
+    marginTop: 3,
+  },
   finishBtn: {
     marginTop: 10,
+  },
+  placeholderTextAndroid: {
+    marginBottom: 0,
   },
 });
