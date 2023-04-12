@@ -5,10 +5,28 @@ import DateTimePicker, {
   DateTimePickerEvent,
 } from '@react-native-community/datetimepicker';
 import { useState } from 'react';
+import { ToDo } from '../types';
 
-export const Todo: React.FC = () => {
-  const [date, setDate] = useState<Date>(new Date());
+type TodoProps = {
+  onAdd: (todo: ToDo) => void;
+};
+
+export const Todo: React.FC<TodoProps> = ({ onAdd }) => {
+  const [date, setDate] = React.useState<Date>(new Date());
+  const [todoText, setTodoText] = React.useState('');
+  const [todoHeader, setTodoHeader] = React.useState('');
   const [showPicker, setShowPicker] = useState<Boolean>(false);
+  const handleAdd = React.useCallback(() => {
+    const newTodo: ToDo = {
+      header: todoHeader,
+      text: todoText,
+      timestamp: date,
+    };
+    onAdd(newTodo);
+    setTodoHeader('');
+    setTodoText('');
+    setDate(new Date());
+  }, [date, onAdd, todoHeader, todoText]);
 
   const onDateChange = (
     event: DateTimePickerEvent,
@@ -34,6 +52,8 @@ export const Todo: React.FC = () => {
         editable
         maxLength={42}
         placeholder="New todo header"
+        value={todoHeader}
+        onChangeText={setTodoHeader}
       />
       <TextInput
         style={styles.todoText}
@@ -42,6 +62,8 @@ export const Todo: React.FC = () => {
         numberOfLines={4}
         maxLength={100}
         placeholder="New todo text"
+        value={todoText}
+        onChangeText={setTodoText}
       />
       <Text style={styles.datePickerHeader}>When do you want to finish?</Text>
       {showPicker && (
@@ -67,7 +89,7 @@ export const Todo: React.FC = () => {
             styles.selectedDateText
           }>{`Selected Finish Date: ${date.toLocaleDateString()}`}</Text>
       )}
-      <Pressable style={styles.button}>
+      <Pressable style={styles.button} onPress={handleAdd}>
         <Text style={styles.submitBtnText}>Submit</Text>
       </Pressable>
     </Card>
