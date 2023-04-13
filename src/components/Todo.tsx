@@ -101,14 +101,14 @@ const styles = StyleSheet.create({
     minHeight: 270,
     marginLeft: 20,
     marginRight: 20,
-    borderColor: 'black',
+    borderColor: '#222e40',
     borderWidth: 0.15,
     borderRadius: 10,
     padding: 15,
     backgroundColor: 'white',
   },
   todoText: {
-    borderColor: 'black',
+    borderColor: '#222e40',
     borderBottomWidth: 1,
     margin: 10,
     padding: 5,
@@ -118,6 +118,7 @@ const styles = StyleSheet.create({
     marginBottom: 3,
     alignSelf: 'center',
     fontWeight: 'bold',
+    color: '#222e40',
   },
   datePicker: {
     margin: 10,
@@ -125,7 +126,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   button: {
-    borderColor: 'black',
+    borderColor: '#222e40',
     borderRadius: 10,
     borderWidth: 0.3,
     padding: 10,
@@ -138,7 +139,7 @@ const styles = StyleSheet.create({
   submitBtnText: {
     alignSelf: 'center',
     fontWeight: 'bold',
-    color: 'black',
+    color: '#222e40',
   },
   selectedDateText: {
     alignSelf: 'center',
