@@ -1,19 +1,15 @@
 import React from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { ScrollView } from 'react-native';
 import { useAppContext } from '../App.provider';
+import { TodoListItemRow } from '../components/TodoListItemRow';
 
 export const List: React.FC = () => {
   const appContext = useAppContext();
   return (
-    <View style={styles.container}>
-      <Text>List</Text>
-      <Text>{appContext.greeting}</Text>
-    </View>
+    <ScrollView>
+      {appContext.todoList.map(item => (
+        <TodoListItemRow item={item} key={item.timestamp.toISOString()} />
+      ))}
+    </ScrollView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});

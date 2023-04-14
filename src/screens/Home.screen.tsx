@@ -1,24 +1,14 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Todo } from '../components/Todo';
-import { ToDo } from '../types';
-import { TodoListItemRow } from '../components/TodoListItemRow';
+import { useAppContext } from '../App.provider';
 
 export const Home: React.FC = () => {
-  const [todoList, setTodoList] = React.useState<ToDo[]>([]);
-  const handleAddTodo = React.useCallback(
-    (newTodo: ToDo) => {
-      setTodoList(prevTodoList => [...prevTodoList, newTodo]);
-    },
-    [setTodoList],
-  );
+  const appContext = useAppContext();
 
   return (
     <View style={styles.container}>
-      <Todo onAdd={handleAddTodo} />
-      {todoList.map(item => (
-        <TodoListItemRow item={item} key={item.timestamp.toISOString()} />
-      ))}
+      <Todo onAdd={appContext.handleAddTodo} />
     </View>
   );
 };
