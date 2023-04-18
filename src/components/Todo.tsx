@@ -1,5 +1,12 @@
 import React from 'react';
-import { TextInput, StyleSheet, Pressable, Platform } from 'react-native';
+import {
+  TextInput,
+  StyleSheet,
+  Pressable,
+  Platform,
+  Image,
+  View,
+} from 'react-native';
 import { Card, Text } from 'react-native-paper';
 import DateTimePicker, {
   DateTimePickerEvent,
@@ -11,11 +18,14 @@ type TodoProps = {
   onAdd: (todo: ToDo) => void;
 };
 
+const imgSrc = require('../assets/check.png');
+
 export const Todo: React.FC<TodoProps> = ({ onAdd }) => {
   const [date, setDate] = React.useState<Date>(new Date());
   const [todoText, setTodoText] = React.useState('');
   const [todoHeader, setTodoHeader] = React.useState('');
   const [showPicker, setShowPicker] = useState<Boolean>(false);
+  const [isSubmitted, setIsSubmitted] = React.useState(false);
   const handleAdd = React.useCallback(() => {
     const newTodo: ToDo = {
       header: todoHeader,
@@ -26,6 +36,7 @@ export const Todo: React.FC<TodoProps> = ({ onAdd }) => {
     setTodoHeader('');
     setTodoText('');
     setDate(new Date());
+    setIsSubmitted(true);
   }, [date, onAdd, todoHeader, todoText]);
 
   const onDateChange = (
@@ -44,6 +55,17 @@ export const Todo: React.FC<TodoProps> = ({ onAdd }) => {
       setShowPicker(!showPicker);
     }
   };
+
+  if (isSubmitted) {
+    return (
+      <View style={styles.todoContainer}>
+        <Image source={imgSrc} style={styles.image} />
+        <Pressable style={styles.button} onPress={() => setIsSubmitted(false)}>
+          <Text style={styles.submitBtnText}>Back</Text>
+        </Pressable>
+      </View>
+    );
+  }
 
   return (
     <Card style={styles.todoContainer} mode={'elevated'}>
@@ -151,5 +173,11 @@ const styles = StyleSheet.create({
   },
   placeholderTextAndroid: {
     marginBottom: 0,
+  },
+  image: {
+    alignSelf: 'center',
+    height: 150,
+    width: 150,
+    marginTop: 40,
   },
 });
