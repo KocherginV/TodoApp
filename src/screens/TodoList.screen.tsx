@@ -7,9 +7,13 @@ export const List: React.FC = () => {
   const appContext = useAppContext();
   return (
     <ScrollView>
-      {appContext.todoList.map(item => (
-        <TodoListItemRow item={item} key={item.timestamp.toISOString()} />
-      ))}
+      {appContext.todoList.length > 0 &&
+        appContext.todoList.map(item => (
+          <TodoListItemRow
+            item={item}
+            key={new Date(item.timestamp).toISOString()}
+          />
+        ))}
     </ScrollView>
   );
 };

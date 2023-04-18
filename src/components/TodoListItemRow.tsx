@@ -13,7 +13,7 @@ export const TodoListItemRow: React.FC<TodoListItemRowProps> = ({ item }) => {
       <View style={styles.rowContainer}>
         <Text style={styles.headerText}>{item.header}</Text>
         <Text style={styles.timestampText}>
-          {item.timestamp.toDateString()}
+          {new Date(item.timestamp).toDateString()}
         </Text>
       </View>
     </Card>
