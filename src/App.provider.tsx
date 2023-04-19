@@ -1,6 +1,7 @@
 import React from 'react';
 import { ToDo } from './types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Alert } from 'react-native';
 
 type AppContextType = {
   todoList: ToDo[];
@@ -42,19 +43,38 @@ export const AppProvider: React.FC = ({ children }) => {
 
   const handleDeleteTodo = React.useCallback(
     (timestamp: Date) => {
-      setTodoList(prevTodoList => {
-        const updatedTodoList = prevTodoList.filter(
-          todo => todo.timestamp !== timestamp,
-        );
-        AsyncStorage.setItem('todoList', JSON.stringify(updatedTodoList)).catch(
-          error =>
-            console.error(
-              'Failed to save updated todo list to storage:',
-              error,
-            ),
-        );
-        return updatedTodoList;
-      });
+      Alert.alert(
+        'Delete ToDo',
+        'Delete this Todo?',
+        [
+          {
+            text: 'Cancel',
+            style: 'cancel',
+          },
+          {
+            text: 'Delete',
+            style: 'destructive',
+            onPress: () => {
+              setTodoList(prevTodoList => {
+                const updatedTodoList = prevTodoList.filter(
+                  todo => todo.timestamp !== timestamp,
+                );
+                AsyncStorage.setItem(
+                  'todoList',
+                  JSON.stringify(updatedTodoList),
+                ).catch(error =>
+                  console.error(
+                    'Failed to save updated todo list to storage:',
+                    error,
+                  ),
+                );
+                return updatedTodoList;
+              });
+            },
+          },
+        ],
+        { cancelable: true },
+      );
     },
     [setTodoList],
   );
