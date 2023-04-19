@@ -5,11 +5,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 type AppContextType = {
   todoList: ToDo[];
   handleAddTodo: (todo: ToDo) => void;
+  handleDeleteTodo: (timestamp: Date) => void;
 };
 
 const defaultValue = {
   todoList: [],
   handleAddTodo: () => {},
+  handleDeleteTodo: () => {},
 };
 
 const AppContext = React.createContext<AppContextType>(defaultValue);
@@ -38,6 +40,25 @@ export const AppProvider: React.FC = ({ children }) => {
     [setTodoList],
   );
 
+  const handleDeleteTodo = React.useCallback(
+    (timestamp: Date) => {
+      setTodoList(prevTodoList => {
+        const updatedTodoList = prevTodoList.filter(
+          todo => todo.timestamp !== timestamp,
+        );
+        AsyncStorage.setItem('todoList', JSON.stringify(updatedTodoList)).catch(
+          error =>
+            console.error(
+              'Failed to save updated todo list to storage:',
+              error,
+            ),
+        );
+        return updatedTodoList;
+      });
+    },
+    [setTodoList],
+  );
+
   React.useEffect(() => {
     const saveTodoList = async () => {
       try {
@@ -50,7 +71,7 @@ export const AppProvider: React.FC = ({ children }) => {
   }, [todoList]);
 
   return (
-    <AppContext.Provider value={{ todoList, handleAddTodo }}>
+    <AppContext.Provider value={{ todoList, handleAddTodo, handleDeleteTodo }}>
       {children}
     </AppContext.Provider>
   );

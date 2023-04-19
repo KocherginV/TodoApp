@@ -1,13 +1,15 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Pressable } from 'react-native';
 import { ToDo } from '../types';
 import { Card, Text } from 'react-native-paper';
+import { useAppContext } from '../App.provider';
 
 type TodoListItemRowProps = {
   item: ToDo;
 };
 
 export const TodoListItemRow: React.FC<TodoListItemRowProps> = ({ item }) => {
+  const appContext = useAppContext();
   return (
     <Card style={styles.container}>
       <View style={styles.rowContainer}>
@@ -15,6 +17,11 @@ export const TodoListItemRow: React.FC<TodoListItemRowProps> = ({ item }) => {
         <Text style={styles.timestampText}>
           {new Date(item.timestamp).toDateString()}
         </Text>
+        <Pressable
+          hitSlop={16}
+          onPress={() => appContext.handleDeleteTodo(item.timestamp)}>
+          <Text style={styles.headerText}>Delete</Text>
+        </Pressable>
       </View>
     </Card>
   );
