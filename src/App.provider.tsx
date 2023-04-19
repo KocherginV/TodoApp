@@ -19,18 +19,27 @@ const AppContext = React.createContext<AppContextType>(defaultValue);
 
 export const AppProvider: React.FC = ({ children }) => {
   const [todoList, setTodoList] = React.useState<ToDo[]>([]);
+  const getItemsFromStorage = async () => {
+    try {
+      const storedTodoList = await AsyncStorage.getItem('todoList');
+      if (storedTodoList !== null) {
+        setTodoList(JSON.parse(storedTodoList));
+      }
+    } catch (error) {
+      console.error('Failed to load from storage', error);
+    }
+  };
+
+  const setItemsToStorage = async (list: ToDo[]) => {
+    try {
+      await AsyncStorage.setItem('todoList', JSON.stringify(list));
+    } catch (error) {
+      console.error('Failed to save todo list to storage: ', error);
+    }
+  };
 
   React.useEffect(() => {
-    const loadTodoList = async () => {
-      try {
-        const storedTodoList = await AsyncStorage.getItem('todoList');
-        if (storedTodoList !== null) {
-          setTodoList(JSON.parse(storedTodoList));
-        }
-      } catch (error) {
-        console.error('Failed to load from storage', error);
-      }
-    };
+    const loadTodoList = getItemsFromStorage;
     loadTodoList();
   }, []);
 
@@ -59,15 +68,7 @@ export const AppProvider: React.FC = ({ children }) => {
                 const updatedTodoList = prevTodoList.filter(
                   todo => todo.timestamp !== timestamp,
                 );
-                AsyncStorage.setItem(
-                  'todoList',
-                  JSON.stringify(updatedTodoList),
-                ).catch(error =>
-                  console.error(
-                    'Failed to save updated todo list to storage:',
-                    error,
-                  ),
-                );
+                setItemsToStorage(updatedTodoList);
                 return updatedTodoList;
               });
             },
@@ -80,15 +81,9 @@ export const AppProvider: React.FC = ({ children }) => {
   );
 
   React.useEffect(() => {
-    const saveTodoList = async () => {
-      try {
-        await AsyncStorage.setItem('todoList', JSON.stringify(todoList));
-      } catch (error) {
-        console.error('Failed to save todo list to storage: ', error);
-      }
-    };
-    saveTodoList();
-  }, [todoList]);
+    const saveTodoList = setItemsToStorage;
+    saveTodoList(todoList);
+  });
 
   return (
     <AppContext.Provider value={{ todoList, handleAddTodo, handleDeleteTodo }}>
