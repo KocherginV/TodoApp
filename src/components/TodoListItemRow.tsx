@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Pressable } from 'react-native';
+import { StyleSheet, View, Pressable, LayoutAnimation } from 'react-native';
 import { ToDo } from '../types';
 import { Card, Text } from 'react-native-paper';
 import { useAppContext } from '../App.provider';
@@ -7,9 +7,21 @@ import { useAppContext } from '../App.provider';
 type TodoListItemRowProps = {
   item: ToDo;
 };
+const springAnimation = {
+  duration: 1400,
+  update: {
+    type: LayoutAnimation.Types.spring,
+    springDamping: 0.4,
+  },
+};
 
 export const TodoListItemRow: React.FC<TodoListItemRowProps> = ({ item }) => {
   const appContext = useAppContext();
+  const handlePress = React.useCallback(() => {
+    LayoutAnimation.configureNext(springAnimation);
+    appContext.handleDeleteTodo(item.timestamp);
+  }, [appContext, item]);
+
   return (
     <Card style={styles.container}>
       <View style={styles.rowContainer}>
@@ -17,9 +29,7 @@ export const TodoListItemRow: React.FC<TodoListItemRowProps> = ({ item }) => {
         <Text style={styles.timestampText}>
           {new Date(item.timestamp).toDateString()}
         </Text>
-        <Pressable
-          hitSlop={16}
-          onPress={() => appContext.handleDeleteTodo(item.timestamp)}>
+        <Pressable hitSlop={16} onPress={handlePress}>
           <Text style={styles.headerText}>Delete</Text>
         </Pressable>
       </View>
