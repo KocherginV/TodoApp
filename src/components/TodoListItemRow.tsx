@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useRef } from 'react';
 import { StyleSheet, View, Pressable, LayoutAnimation } from 'react-native';
 import { ToDo } from '../types';
 import { Card, Text } from 'react-native-paper';
