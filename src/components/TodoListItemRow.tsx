@@ -1,9 +1,16 @@
-import React, { useRef } from 'react';
-import { StyleSheet, View, Pressable, LayoutAnimation } from 'react-native';
+import React, { useRef, useState } from 'react';
+import {
+  StyleSheet,
+  View,
+  Pressable,
+  LayoutAnimation,
+  Modal,
+} from 'react-native';
 import { ToDo } from '../types';
 import { Card, Text } from 'react-native-paper';
 import { useAppContext } from '../App.provider';
 import { Swipeable } from 'react-native-gesture-handler';
+import { theme } from '../theme';
 
 type TodoListItemRowProps = {
   item: ToDo;
@@ -15,6 +22,7 @@ const springAnimation = {
     springDamping: 0.4,
   },
 };
+const Overlay = () => <View style={styles.overlay} />;
 
 export const TodoListItemRow: React.FC<TodoListItemRowProps> = ({ item }) => {
   const appContext = useAppContext();
@@ -27,6 +35,7 @@ export const TodoListItemRow: React.FC<TodoListItemRowProps> = ({ item }) => {
     swipeableRef?.current?.close();
     handlePress();
   }, [handlePress]);
+  const [modalVisible, setModalVisible] = useState(false);
 
   return (
     <Swipeable
@@ -38,7 +47,9 @@ export const TodoListItemRow: React.FC<TodoListItemRowProps> = ({ item }) => {
       <Card style={styles.container}>
         <View style={styles.rowContainer}>
           <Text style={styles.headerText}>{item.header}</Text>
-          <Text style={styles.timestampText}>
+          <Text
+            style={styles.timestampText}
+            onPress={() => setModalVisible(true)}>
             {new Date(item.timestamp).toDateString()}
           </Text>
           <Pressable hitSlop={16} onPress={handlePress}>
@@ -46,6 +57,26 @@ export const TodoListItemRow: React.FC<TodoListItemRowProps> = ({ item }) => {
           </Pressable>
         </View>
       </Card>
+      <Modal
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+        transparent={true}
+        animationType="slide">
+        <View style={styles.modal}>
+          <View style={styles.heading}>
+            <Text style={styles.modalHeader}>Modal details</Text>
+            <Pressable
+              onPress={() => setModalVisible(false)}
+              style={styles.closeModalBtn}>
+              <Text style={styles.closeModalBtnText}>Close</Text>
+            </Pressable>
+          </View>
+          <Text>Todo title</Text>
+          <Text>Todo content</Text>
+          <Text>Todo date</Text>
+        </View>
+      </Modal>
+      {modalVisible && <Overlay />}
     </Swipeable>
   );
 };
@@ -77,5 +108,43 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginRight: 20,
     borderRadius: 12,
+  },
+  modal: {
+    margin: 0,
+    marginTop: 350,
+    marginBottom: 0,
+    borderColor: theme.colorDarkGrey,
+    borderWidth: 1,
+    borderRadius: 10,
+    backgroundColor: 'white',
+    flex: 1,
+  },
+  heading: {
+    padding: 10,
+    flexDirection: 'row',
+    borderBottomColor: theme.colorDarkGrey,
+    borderBottomWidth: 1,
+  },
+  modalHeader: {
+    flex: 3,
+    marginLeft: 130,
+    color: theme.colorDarkGrey,
+    fontWeight: 'bold',
+  },
+  closeModalBtn: {
+    flex: 1,
+    alignItems: 'flex-end',
+  },
+  closeModalBtnText: {
+    color: theme.colorDarkGrey,
+    fontWeight: 'bold',
+  },
+  overlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
   },
 });
