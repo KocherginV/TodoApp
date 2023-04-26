@@ -44,12 +44,10 @@ export const TodoListItemRow: React.FC<TodoListItemRowProps> = ({ item }) => {
       rightThreshold={80}
       renderRightActions={() => <View style={styles.deleteBackground} />}
       onSwipeableWillOpen={handleSwipeableRightOpen}>
-      <Card style={styles.container}>
+      <Card style={styles.container} onPress={() => setModalVisible(true)}>
         <View style={styles.rowContainer}>
           <Text style={styles.headerText}>{item.header}</Text>
-          <Text
-            style={styles.timestampText}
-            onPress={() => setModalVisible(true)}>
+          <Text style={styles.timestampText}>
             {new Date(item.timestamp).toDateString()}
           </Text>
           <Pressable hitSlop={16} onPress={handlePress}>
@@ -64,16 +62,27 @@ export const TodoListItemRow: React.FC<TodoListItemRowProps> = ({ item }) => {
         animationType="slide">
         <View style={styles.modal}>
           <View style={styles.heading}>
-            <Text style={styles.modalHeader}>Modal details</Text>
+            <Text style={styles.modalHeader}>{item.header}</Text>
             <Pressable
               onPress={() => setModalVisible(false)}
               style={styles.closeModalBtn}>
               <Text style={styles.closeModalBtnText}>Close</Text>
             </Pressable>
           </View>
-          <Text>Todo title</Text>
-          <Text>Todo content</Text>
-          <Text>Todo date</Text>
+          <View style={styles.todoDetailsRow}>
+            <Text style={[styles.todoDetailsItem, styles.todoDetailsLabel]}>
+              Complete on:
+            </Text>
+            <Text style={styles.todoDetailsItem}>
+              {new Date(item.timestamp).toDateString()}
+            </Text>
+          </View>
+          <View style={styles.todoDetailsRow}>
+            <Text style={[styles.todoDetailsItem, styles.todoDetailsLabel]}>
+              Additional details:
+            </Text>
+            <Text style={styles.todoDetailsItem}>{item.text}</Text>
+          </View>
         </View>
       </Modal>
       {modalVisible && <Overlay />}
@@ -127,9 +136,10 @@ const styles = StyleSheet.create({
   },
   modalHeader: {
     flex: 3,
-    marginLeft: 130,
+    marginLeft: 120,
     color: theme.colorDarkGrey,
     fontWeight: 'bold',
+    fontSize: 15,
   },
   closeModalBtn: {
     flex: 1,
@@ -146,5 +156,17 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     backgroundColor: 'rgba(0, 0, 0, 0.4)',
+  },
+  todoDetailsRow: {
+    flexDirection: 'row',
+    margin: 10,
+    padding: 10,
+  },
+  todoDetailsItem: {
+    flex: 1,
+    color: theme.colorDarkGrey,
+  },
+  todoDetailsLabel: {
+    fontWeight: 'bold',
   },
 });
