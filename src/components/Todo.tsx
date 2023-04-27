@@ -79,7 +79,7 @@ export const Todo: React.FC<TodoProps> = ({ onAdd }) => {
       <TextInput
         style={styles.todoText}
         editable
-        maxLength={42}
+        maxLength={30}
         placeholder="New todo header"
         value={todoHeader}
         onChangeText={setTodoHeader}
@@ -90,7 +90,7 @@ export const Todo: React.FC<TodoProps> = ({ onAdd }) => {
         multiline
         numberOfLines={4}
         maxLength={100}
-        placeholder="New todo text"
+        placeholder="Additional info"
         value={todoText}
         onChangeText={setTodoText}
       />
