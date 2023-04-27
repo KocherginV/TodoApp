@@ -6,6 +6,7 @@ import {
   Platform,
   Image,
   View,
+  Alert,
 } from 'react-native';
 import { Card, Text } from 'react-native-paper';
 import DateTimePicker, {
@@ -32,11 +33,17 @@ export const Todo: React.FC<TodoProps> = ({ onAdd }) => {
       text: todoText,
       timestamp: date,
     };
-    onAdd(newTodo);
-    setTodoHeader('');
-    setTodoText('');
-    setDate(new Date());
-    setIsSubmitted(true);
+    if (newTodo.header.length < 3) {
+      Alert.alert(
+        'Your header is too short. Please enter at least 3 characters',
+      );
+    } else {
+      onAdd(newTodo);
+      setTodoHeader('');
+      setTodoText('');
+      setDate(new Date());
+      setIsSubmitted(true);
+    }
   }, [date, onAdd, todoHeader, todoText]);
 
   const onDateChange = (
