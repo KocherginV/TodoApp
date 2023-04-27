@@ -5,6 +5,7 @@ import {
   Pressable,
   LayoutAnimation,
   Modal,
+  Image,
 } from 'react-native';
 import { ToDo } from '../types';
 import { Card, Text } from 'react-native-paper';
@@ -23,6 +24,7 @@ const springAnimation = {
   },
 };
 const Overlay = () => <View style={styles.overlay} />;
+const imgSrc = require('../assets/bin.png');
 
 export const TodoListItemRow: React.FC<TodoListItemRowProps> = ({ item }) => {
   const appContext = useAppContext();
@@ -42,7 +44,11 @@ export const TodoListItemRow: React.FC<TodoListItemRowProps> = ({ item }) => {
       ref={swipeable => (swipeableRef.current = swipeable)}
       friction={2}
       rightThreshold={80}
-      renderRightActions={() => <View style={styles.deleteBackground} />}
+      renderRightActions={() => (
+        <View style={styles.deleteBackground}>
+          <Image source={imgSrc} style={styles.deleteIcon} />
+        </View>
+      )}
       onSwipeableWillOpen={handleSwipeableRightOpen}>
       <Card style={styles.container} onPress={() => setModalVisible(true)}>
         <View style={styles.rowContainer}>
@@ -117,6 +123,15 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginRight: 20,
     borderRadius: 12,
+    justifyContent: 'center',
+  },
+  deleteIcon: {
+    height: 25,
+    width: 25,
+    resizeMode: 'cover',
+    position: 'absolute',
+    right: 12,
+    tintColor: 'white',
   },
   modal: {
     margin: 0,
