@@ -144,21 +144,22 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   heading: {
-    padding: 10,
+    padding: 12,
     flexDirection: 'row',
     borderBottomColor: theme.colorDarkGrey,
     borderBottomWidth: 1,
   },
   modalHeader: {
-    flex: 3,
-    marginLeft: 120,
+    flex: 5,
     color: theme.colorDarkGrey,
     fontWeight: 'bold',
     fontSize: 15,
+    textAlign: 'center',
   },
   closeModalBtn: {
     flex: 1,
     alignItems: 'flex-end',
+    justifyContent: 'center',
   },
   closeModalBtnText: {
     color: theme.colorDarkGrey,
