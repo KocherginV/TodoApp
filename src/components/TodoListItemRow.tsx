@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import {
   StyleSheet,
   View,
@@ -15,6 +15,7 @@ import { theme } from '../theme';
 
 type TodoListItemRowProps = {
   item: ToDo;
+  handleModalVisible: (visible: boolean) => void;
 };
 const springAnimation = {
   duration: 1400,
@@ -23,10 +24,12 @@ const springAnimation = {
     springDamping: 0.4,
   },
 };
-const Overlay = () => <View style={styles.overlay} />;
 const imgSrc = require('../assets/bin.png');
 
-export const TodoListItemRow: React.FC<TodoListItemRowProps> = ({ item }) => {
+export const TodoListItemRow: React.FC<TodoListItemRowProps> = ({
+  item,
+  handleModalVisible,
+}) => {
   const appContext = useAppContext();
   const handlePress = React.useCallback(() => {
     LayoutAnimation.configureNext(springAnimation);
@@ -39,6 +42,13 @@ export const TodoListItemRow: React.FC<TodoListItemRowProps> = ({ item }) => {
   }, [handlePress]);
   const [modalVisible, setModalVisible] = useState(false);
 
+  const updateModalVisibility = useCallback(
+    (value: boolean) => {
+      setModalVisible(value);
+      handleModalVisible(value);
+    },
+    [handleModalVisible],
+  );
   return (
     <Swipeable
       ref={swipeable => (swipeableRef.current = swipeable)}
@@ -50,7 +60,12 @@ export const TodoListItemRow: React.FC<TodoListItemRowProps> = ({ item }) => {
         </View>
       )}
       onSwipeableWillOpen={handleSwipeableRightOpen}>
-      <Card style={styles.container} onPress={() => setModalVisible(true)}>
+      <Card
+        style={styles.container}
+        onPress={useCallback(
+          () => updateModalVisibility(true),
+          [updateModalVisibility],
+        )}>
         <View style={styles.rowContainer}>
           <Text style={styles.headerText}>{item.header}</Text>
           <Text style={styles.timestampText}>
@@ -61,16 +76,12 @@ export const TodoListItemRow: React.FC<TodoListItemRowProps> = ({ item }) => {
           </Pressable>
         </View>
       </Card>
-      <Modal
-        visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}
-        transparent={true}
-        animationType="slide">
+      <Modal visible={modalVisible} transparent={true} animationType="slide">
         <View style={styles.modal}>
           <View style={styles.heading}>
             <Text style={styles.modalHeader}>{item.header}</Text>
             <Pressable
-              onPress={() => setModalVisible(false)}
+              onPress={() => updateModalVisibility(false)}
               style={styles.closeModalBtn}>
               <Text style={styles.closeModalBtnText}>Close</Text>
             </Pressable>
@@ -91,7 +102,6 @@ export const TodoListItemRow: React.FC<TodoListItemRowProps> = ({ item }) => {
           </View>
         </View>
       </Modal>
-      {modalVisible && <Overlay />}
     </Swipeable>
   );
 };
