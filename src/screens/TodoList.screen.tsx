@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { SafeAreaView, StyleSheet, View } from 'react-native';
 import { useAppContext } from '../App.provider';
 import { TodoListItemRow } from '../components/TodoListItemRow';
 import { FlashList } from '@shopify/flash-list';
@@ -12,7 +12,7 @@ export const List: React.FC = () => {
     setModalVisible(visible);
   };
   return (
-    <ScrollView>
+    <SafeAreaView style={styles.safeArea}>
       <FlashList
         data={appContext.todoList.slice().reverse()}
         renderItem={({ item }) => (
@@ -27,11 +27,14 @@ export const List: React.FC = () => {
         estimatedItemSize={82}
       />
       {modalVisible && <Overlay />}
-    </ScrollView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+  },
   overlay: {
     position: 'absolute',
     top: 0,
