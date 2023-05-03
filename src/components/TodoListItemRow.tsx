@@ -12,6 +12,7 @@ import { Card, Text } from 'react-native-paper';
 import { useAppContext } from '../App.provider';
 import { Swipeable } from 'react-native-gesture-handler';
 import { theme } from '../theme';
+import { FlashList } from '@shopify/flash-list';
 
 type TodoListItemRowProps = {
   item: ToDo;
@@ -32,6 +33,7 @@ export const TodoListItemRow: React.FC<TodoListItemRowProps> = ({
 }) => {
   const appContext = useAppContext();
   const handlePress = React.useCallback(() => {
+    list.current?.prepareForLayoutAnimationRender();
     LayoutAnimation.configureNext(springAnimation);
     appContext.handleDeleteTodo(item.timestamp);
   }, [appContext, item]);
@@ -41,6 +43,7 @@ export const TodoListItemRow: React.FC<TodoListItemRowProps> = ({
     handlePress();
   }, [handlePress]);
   const [modalVisible, setModalVisible] = useState(false);
+  const list = useRef<FlashList<number> | null>(null);
 
   const updateModalVisibility = useCallback(
     (value: boolean) => {

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { useAppContext } from '../App.provider';
 import { TodoListItemRow } from '../components/TodoListItemRow';
+import { FlashList } from '@shopify/flash-list';
 
 const Overlay = () => <View style={styles.overlay} />;
 export const List: React.FC = () => {
@@ -12,17 +13,19 @@ export const List: React.FC = () => {
   };
   return (
     <ScrollView>
-      {appContext.todoList.length > 0 &&
-        appContext.todoList
-          .slice()
-          .reverse()
-          .map(item => (
-            <TodoListItemRow
-              item={item}
-              key={new Date(item.timestamp).toISOString()}
-              handleModalVisible={handleModalVisible}
-            />
-          ))}
+      <FlashList
+        data={appContext.todoList.slice().reverse()}
+        renderItem={({ item }) => (
+          <TodoListItemRow
+            item={item}
+            handleModalVisible={handleModalVisible}
+          />
+        )}
+        keyExtractor={item => {
+          return item.timestamp.toString();
+        }}
+        estimatedItemSize={82}
+      />
       {modalVisible && <Overlay />}
     </ScrollView>
   );
